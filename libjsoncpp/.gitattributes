@@ -1,2 +1,4 @@
 include/json symlink=dir
 src/json symlink=dir
+tests/conformance/data symlink=dir
+tests/conformance/jsonchecker symlink=dir

@@ -1,0 +1,88 @@
+: data
+:
+{{
+  writers = StyledWriter StyledStreamWriter BuiltStyledStreamWriter
+
+  : full
+  : round-trip fixtures with a checked-in expected flattened-tree dump, run
+  : through each of upstream's three Json::Writer implementations (matching
+  : upstream's test/runjsontests.py, which repeats the whole suite once per
+  : writer). jsontestrunner writes its .actual/.rewrite/.actual-rewrite next
+  : to the input path, so the input is copied into the test's own working
+  : directory first rather than run directly against the symlinked source.
+  :
+  find $src_base/data/ -name '*.json' | for -n f
+  {
+    n = $path.base($path.leaf($f))
+    if ($string.starts_with($path.leaf($f), 'fail'))
+      continue
+    cp $f $n".json"
+
+    # Upstream's own comparison (test/runjsontests.py's compareOutputs) strips
+    # \r, trims each line, and drops blank lines before comparing; match that
+    # here since a value with a comment can produce a harmless trailing blank
+    # line.
+    #
+    cat $src_base/data/$n".expected" | set -n expected_lines
+    expected_lines = $regex.filter_out_match($expected_lines, '')
+    for l: $expected_lines
+      echo $string.trim($string.replace($l, '\r', '')) >+expected.norm
+
+    for w: $writers
+    {
+      $* --json-writer $w $n".json" &$n".actual" &$n".rewrite" &$n".actual-rewrite" == 0
+
+      cat $n".actual" | set -n actual_lines
+      actual_lines = $regex.filter_out_match($actual_lines, '')
+      for l: $actual_lines
+        echo $string.trim($string.replace($l, '\r', '')) >+$w".actual.norm"
+      diff expected.norm $w".actual.norm"
+
+      cat $n".actual-rewrite" | set -n actual_rewrite_lines
+      actual_rewrite_lines = $regex.filter_out_match($actual_rewrite_lines, '')
+      for l: $actual_rewrite_lines
+        echo $string.trim($string.replace($l, '\r', '')) >+$w".actual-rewrite.norm"
+      diff expected.norm $w".actual-rewrite.norm"
+
+      rm $w".actual.norm" $w".actual-rewrite.norm"
+    }
+    rm expected.norm
+  }
+
+  : fail
+  : parse-only fixtures that must fail to parse. jsontestrunner never writes
+  : output files in --parse-only mode, so these run directly against the
+  : symlinked source path.
+  :
+  find $src_base/data/ -name 'fail*.json' | for -n f
+  {
+    opts = --parse-only
+    if ($string.contains($path.leaf($f), '_strict_'))
+      opts += --strict
+    $* $opts $f 2>- != 0
+  }
+}}
+
+: jsonchecker
+: the official json.org conformance suite, always --parse-only --strict
+:
+{{
+  known = fail4.json fail7.json fail8.json fail9.json fail10.json \
+          fail13.json fail18.json fail25.json fail27.json
+
+  : pass
+  :
+  find $src_base/jsonchecker/ -name 'pass*.json' | for -n f
+    $* --parse-only --strict $f == 0
+
+  : fail
+  : jsoncpp intentionally accepts a handful of json.org's stricter cases -
+  : exclude exactly the numbers upstream's test/runjsontests.py excludes
+  : (its own `known` list), skip the rest.
+  :
+  find $src_base/jsonchecker/ -name 'fail*.json' | for -n f
+  {
+    if (!$find($known, $path.leaf($f)))
+      $* --parse-only --strict $f 2>- != 0
+  }
+}}

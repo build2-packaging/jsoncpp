@@ -1,0 +1,6 @@
+import libs = libjsoncpp%lib{jsoncpp}
+exe{jsontestrunner}: cxx{main} $libs testscript
+
+# Test data read by the testscript.
+#
+exe{jsontestrunner}: file{data/**} file{jsonchecker/**}: include = adhoc
