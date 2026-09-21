@@ -1,15 +1,17 @@
 : 1
 name: libjsoncpp
-version: 0.1.0-a.0.z
+version: 1.9.8-a.0.z
 language: c++
-project: build2-jsoncpp
-summary: JsonCpp
-license: other: proprietary ; Not free/open source.
+project: jsoncpp
+summary: JSON parsing and serialization C++ library
+license: MIT
+license: other: public domain
+topics: json parsing, json serialization
+keywords: json parsing serialization
 description-file: README.md
 package-description-file: PACKAGE-README.md
-url: https://example.org/upstream
-email: upstream@example.org
-package-url: https://github.com/build2-packaging/build2-jsoncpp
+url: https://github.com/open-source-parsers/jsoncpp
+package-url: https://github.com/build2-packaging/jsoncpp
 package-email: packaging@build2.org ; Mailing list.
 depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
