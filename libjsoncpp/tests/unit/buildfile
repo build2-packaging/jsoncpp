@@ -1,0 +1,2 @@
+import libs = libjsoncpp%lib{jsoncpp}
+exe{jsoncpp_test}: {hxx cxx}{*} $libs testscript
