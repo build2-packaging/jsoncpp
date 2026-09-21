@@ -15,6 +15,10 @@ lib{jsoncpp}: $pub/{$pub_hdrs}
 #
 lib{jsoncpp}: json/{hxx cxx}{**} $impl_libs $intf_libs
 
+# Included by json_value.cpp.
+#
+lib{jsoncpp}: json/hxx{json_valueiterator.inl}: include = adhoc
+
 # Build options.
 #
 out_pfx_inc = [dir_path] $out_root/include/
