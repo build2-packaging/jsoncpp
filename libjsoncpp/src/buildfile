@@ -1,6 +1,5 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
 
 # Public headers.
 #
@@ -14,7 +13,7 @@ lib{jsoncpp}: $pub/{$pub_hdrs}
 
 # Private headers and sources as well as dependencies.
 #
-lib{jsoncpp}: {hxx cxx}{**} $impl_libs $intf_libs
+lib{jsoncpp}: json/{hxx cxx}{**} $impl_libs $intf_libs
 
 # Build options.
 #
@@ -26,8 +25,7 @@ src_pfx_src = [dir_path] $src_root/src/
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 
-#obja{*}: cxx.poptions += -DJSON_STATIC_BUILD
-#objs{*}: cxx.poptions += -DJSON_SHARED_BUILD
+objs{*}: cxx.poptions += -DJSON_DLL_BUILD
 
 # Export options.
 #
@@ -37,8 +35,7 @@ lib{jsoncpp}:
   cxx.export.libs = $intf_libs
 }
 
-#liba{jsoncpp}: cxx.export.poptions += -DJSON_STATIC
-#libs{jsoncpp}: cxx.export.poptions += -DJSON_SHARED
+libs{jsoncpp}: cxx.export.poptions += -DJSON_DLL
 
 # For pre-releases use the complete version to make sure they cannot
 # be used in place of another pre-release or the final version. See
@@ -51,4 +48,4 @@ else
 
 # Don't install private headers.
 #
-hxx{*}: install = false
+json/hxx{*}: install = false
