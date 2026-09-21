@@ -1,34 +1,19 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <json/jsoncpp.h>
+#include <json/json.h>
 
 #undef NDEBUG
 #include <cassert>
+#include <sstream>
 
 int main ()
 {
-  using namespace std;
-  using namespace jsoncpp;
+  Json::Value root;
+  std::istringstream in (R"({"name": "jsoncpp", "ok": true})");
+  in >> root;
 
-  // Basics.
-  //
-  {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
+  assert (root["ok"].asBool ());
+  assert (root["name"].asString () == "jsoncpp"); // non-inline: json_value.cpp
 
-  // Empty name.
-  //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  Json::StreamWriterBuilder wb;
+  std::string out (Json::writeString (wb, root)); // non-inline: json_writer.cpp
+  assert (!out.empty ());
 }
