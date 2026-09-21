@@ -1,3 +1,9 @@
 import libs = libjsoncpp%lib{jsoncpp}
 
 exe{driver}: {hxx cxx}{**} $libs testscript{**}
+
+# On MinGW, JSON_DLL makes the public headers use MSVC's #pragma
+# warning(...), which GCC does not recognize.
+#
+if ($cxx.class == 'gcc' && $cxx.target.class == 'windows')
+  obj{driver}: cxx.coptions += -Wno-unknown-pragmas

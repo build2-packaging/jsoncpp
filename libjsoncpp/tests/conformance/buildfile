@@ -1,6 +1,12 @@
 import libs = libjsoncpp%lib{jsoncpp}
 exe{jsontestrunner}: cxx{main} $libs testscript
 
+# On MinGW, JSON_DLL makes the public headers use MSVC's #pragma
+# warning(...), which GCC does not recognize.
+#
+if ($cxx.class == 'gcc' && $cxx.target.class == 'windows')
+  obj{main}: cxx.coptions += -Wno-unknown-pragmas
+
 # Test data read by the testscript.
 #
 exe{jsontestrunner}: file{data/**} file{jsonchecker/**}: include = adhoc

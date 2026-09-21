@@ -1,2 +1,16 @@
 import libs = libjsoncpp%lib{jsoncpp}
 exe{jsoncpp_test}: {hxx cxx}{*} $libs testscript
+
+if ($cxx.class == 'gcc')
+{
+  # On MinGW, JSON_DLL makes the public headers use MSVC's #pragma
+  # warning(...), which GCC does not recognize.
+  #
+  if ($cxx.target.class == 'windows')
+    obj{main jsontest fuzz}: cxx.coptions += -Wno-unknown-pragmas
+
+  # main.cpp's [=]-capturing-this lambda is deprecated under C++20 (we
+  # build at cxx.std = latest). This is a language-rule change, not a bug.
+  #
+  obj{main}: cxx.coptions += -Wno-deprecated
+}

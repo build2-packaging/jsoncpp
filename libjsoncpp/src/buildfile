@@ -31,6 +31,23 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
 
 objs{*}: cxx.poptions += -DJSON_DLL_BUILD
 
+# Harmless GCC/Clang warnings in upstream code.
+#
+if ($cxx.class == 'gcc')
+{
+  # On MinGW, JSON_DLL_BUILD makes the public headers use MSVC's #pragma
+  # warning(...), which GCC does not recognize.
+  #
+  if ($cxx.target.class == 'windows')
+    json/obj{json_reader json_value json_writer}: cxx.coptions += -Wno-unknown-pragmas
+
+  # Value::swapPayload()'s inlined std::swap<ValueHolder> trips
+  # -Wuninitialized at -O3 on the union-backed ValueHolder, a known
+  # false-positive class for union-based tagged types.
+  #
+  json/obj{json_value}: cxx.coptions += -Wno-uninitialized
+}
+
 # Export options.
 #
 lib{jsoncpp}:
