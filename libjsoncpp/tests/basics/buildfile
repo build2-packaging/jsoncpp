@@ -1,0 +1,3 @@
+import libs = libjsoncpp%lib{jsoncpp}
+
+exe{driver}: {hxx cxx}{**} $libs testscript{**}
