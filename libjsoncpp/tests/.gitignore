@@ -1,6 +1,8 @@
 # Test executables.
 #
 driver
+jsontestrunner
+jsoncpp_test
 
 # Testscript output directories (can be symlinks).
 #
