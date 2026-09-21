@@ -1,19 +1,21 @@
-# build2-jsoncpp - <SUMMARY>
+# jsoncpp - JSON parsing and serialization C++ library
 
-This is a `build2` package repository for [`build2-jsoncpp`](https://<UPSTREAM-URL>),
-a <SUMMARY-OF-FUNCTIONALITY>.
+This is a `build2` package repository for
+[`jsoncpp`](https://github.com/open-source-parsers/jsoncpp), a C++ library
+for JSON parsing and serialization, with support for reading and writing
+values while optionally preserving comments in the source document.
 
 This file contains setup instructions and other details that are more
 appropriate for development rather than consumption. If you want to use
-`build2-jsoncpp` in your `build2`-based project, then instead see the accompanying
-[`PACKAGE-README.md`](<PACKAGE>/PACKAGE-README.md) file.
+`jsoncpp` in your `build2`-based project, then instead see the accompanying
+[`PACKAGE-README.md`](./libjsoncpp/PACKAGE-README.md) file.
 
-The development setup for `build2-jsoncpp` uses the standard `bdep`-based workflow.
+The development setup for `jsoncpp` uses the standard `bdep`-based workflow.
 For example:
 
 ```
-git clone .../build2-jsoncpp.git
-cd build2-jsoncpp
+git clone --recursive https://github.com/build2-packaging/jsoncpp.git
+cd jsoncpp
 
 bdep init -C @gcc cc config.cxx=g++
 bdep update
