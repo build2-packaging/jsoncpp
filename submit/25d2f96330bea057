@@ -1,0 +1,8 @@
+: 1
+name: libjsoncpp
+version: 1.9.8
+language: c++
+project: jsoncpp
+summary: JSON parsing and serialization C++ library
+license: MIT
+license: other: public domain
