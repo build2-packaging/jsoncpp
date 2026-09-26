@@ -1,6 +1,6 @@
 : 1
 name: libjsoncpp
-version: 1.9.8-a.0.z
+version: 1.9.8
 language: c++
 project: jsoncpp
 summary: JSON parsing and serialization C++ library
